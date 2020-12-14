@@ -1,0 +1,28 @@
+1595342397734	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AESSIN~1\\AppData\\Local\\Temp\\rust_mozprofilefSC4bd"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1595342401512	Marionette	INFO	Listening on port 59600
+1595342401606	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://nexus.ensighten.com/dell/eSupport/code/1c4d7fecfbf8065e2265a719001dbd6a.js?conditionId0=421951, line 0: Successfully compiled asm.js code (total compilation time 1ms)
+JavaScript error: https://www.dellcdn.com/support/staticcdn/external/js/boomerang/1.3/boomerang.min.js, line 3: NS_ERROR_NOT_INITIALIZED: 
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x39012D,name=PContent::Msg_ScriptError) Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x39012D,name=PContent::Msg_ScriptError) Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x5A000D,name=PHttpChannel::Msg_DeletingChannel) Channel closing: too late to send/recv, messages will be lost
+
+1595342408068	Marionette	INFO	Stopped listening on port 59600
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
