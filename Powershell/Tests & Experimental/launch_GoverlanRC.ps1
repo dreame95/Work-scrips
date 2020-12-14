@@ -1,0 +1,1 @@
+﻿Start-Process "C:\Program Files\Goverlan Reach Console 9\GoverRMC.exe" -Credential $(Get-Credential)

@@ -1,0 +1,1 @@
+﻿'\\wmh-it\data$\Software\Bios Config\.\Bios_Test_x64.exe'
