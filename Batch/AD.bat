@@ -1,0 +1,1 @@
+runas /user:ktadmin "C:\Windows\System32\en-US\dsa.msc"
