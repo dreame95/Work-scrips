@@ -26,50 +26,206 @@ function Move-Department{
         Get-AdUser $args[0] | Move-ADObject -TargetPath $unknownOU
     }else{
         switch ($dept){
-            'Providers' {Write-Output $args[0] ' goes to OU: Providers'}
-            'RHC - On Campus' {Write-Output $args[0] ' goes to OU: RHC - On Campus'}
-            'Administrative Services' {Write-Output $args[0] ' goes to OU: Administrative Services'}
-            'Operations Division' {Write-Output $args[0] ' goes to OU: Operations Division'}
-            'Wyandot Memorial Hospital' {Write-Output $args[0] ' goes to OU: CEO'}
-            'CEO' {Write-Output $args[0] ' goes to OU: CEO'}
-            'Respiratory/EEG/Sleep Services' {Write-Output $args[0] ' goes to OU: Respiratory/EEG/Sleep Services'}
-            'Revenue Cycle Division' {Write-Output $args[0] ' goes to OU: Revenue Cycle Division'}
-            'Med Surg' {Write-Output $args[0] ' goes to OU: Med Surg'}
-            'Reimbursement' {Write-Output $args[0] ' goes to OU: Reimbursement'}
-            'Patient Financial Services' {Write-Output $args[0] ' goes to OU: PFS'}
-            'Oncology Services' {Write-Output $args[0] ' goes to OU: Oncology Services'}
-            'Nursing Services' {Write-Output $args[0] ' goes to OU: Nursing Services'}
-            'Medical Records' {Write-Output $args[0] ' goes to OU: Medical Records'}
-            'SHC' {Write-Output $args[0] ' goes to OU: SHC'}
-            'Laboratory Services' {Write-Output $args[0] ' goes to OU: Laboratory Services'}
-            'Tarhe Trail' {Write-Output $args[0] ' goes to OU: Tarhe Trail'}
-            'Security Services' {Write-Output $args[0] ' goes to OU: Security Services'}
-            'Pharmacy Services' {Write-Output $args[0] ' goes to OU: Pharmacy Services'}
+            'Providers' {
+                Write-Output $args[0] ' goes to OU: Providers'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot','CTX-AppEpicPLY-Wyandot','WMHLucid-Provider')
+                Set-Membership $args[0] $groups
+            }
+            'RHC - On Campus' {
+                Write-Output $args[0] ' goes to OU: RHC - On Campus'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Physician Services')
+                Set-Membership $args[0] $groups
+                }
+            'Administrative Services' {
+                Write-Output $args[0] ' goes to OU: Administrative Services'
+                $groups = @('Management Team', 'memo')
+                Set-Membership $args[0] $groups
+                }
+            'Operations Division' {
+                Write-Output $args[0] ' goes to OU: Operations Division'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot,CTX-AppEpic-PRD','memo','Management Team')
+                Set-Membership $args[0] $groups
+                }
+            'Wyandot Memorial Hospital' {
+                Write-Output $args[0] ' goes to OU: CEO'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot','CTX-AppEpicPLY-Wyandot','Management Team')
+                Set-Membership $args[0] $groups
+                }
+            'CEO' {
+                Write-Output $args[0] ' goes to OU: CEO'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot','CTX-AppEpicPLY-Wyandot','Management Team')
+                Set-Membership $args[0] $groups
+            }
+            'Respiratory/EEG/Sleep Services' {
+                Write-Output $args[0] ' goes to OU: Respiratory/EEG/Sleep Services'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot','iSTAT-Remote_Access','respiratory_access','WMHLucid-Staff')
+                Set-Membership $args[0] $groups
+            }
+            'Human Resources & Regulatory Services Division'{
+                Write-Output $args[0] ' goes to OU: Human Resources & Regulatory Services Division'
+                $groups = @('memo')
+                Set-Membership $args[0] $groups
+            }
+            'Revenue Cycle Division' {
+                Write-Output $args[0] ' goes to OU: Revenue Cycle Division'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-Wyandot','memo','Management Team')
+                Set-Membership $args[0] $groups
+            }
+            'Med Surg' {
+                Write-Output $args[0] ' goes to OU: Med Surg'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-Wyandot','CTX-AppEpicPRD-WarpDrive-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Reimbursement' {
+                Write-Output $args[0] ' goes to OU: Reimbursement'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Patient Financial Services' {
+                Write-Output $args[0] ' goes to OU: PFS'
+                $groups = @('3M Encoders','Billers','BSMH-CarePath-Access','CTX-AppEpicPRD-Wyandot','Cisco Sparks Denied','Patient Access Log', 'PFS Group')
+                Set-Membership $args[0] $groups
+            }
+            'Oncology Services' {
+                Write-Output $args[0] ' goes to OU: Oncology Services'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-Wyandot','Oncology Group')
+                Set-Membership $args[0] $groups
+            }
+            'Nursing Services' {
+                Write-Output $args[0] ' goes to OU: Nursing Services'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-Wyandot','CTX-AppEpicPRD-Warpdrive-Wyandot','Management Team','Nursing Department','Nursing_access')
+                Set-Membership $args[0] $groups
+            }
+            'Medical Records' {
+                Write-Output $args[0] ' goes to OU: Medical Records'
+                $groups = @('3M Encoders','BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-Warpdrive-Wyandot','CTX-AppEpicPRD-Wyandot','MRCoders')
+                Set-Membership $args[0] $groups
+            }
+            'SHC' {
+                Write-Output $args[0] ' goes to OU: SHC'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','SHC Group')
+                Set-Membership $args[0] $groups
+            }
+            'Laboratory Services' {
+                Write-Output $args[0] ' goes to OU: Laboratory Services'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Tarhe Trail' {
+                Write-Output $args[0] ' goes to OU: Tarhe Trail'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Physician Services','Physician Services')
+                Set-Membership $args[0] $groups
+
+            }
+            'Security Services' {
+                Write-Output $args[0] ' goes to OU: Security Services'
+                $groups = @('Camera Security','Security')
+                Set-Membership $args[0] $groups
+            }
+            'Pharmacy Services' {
+                Write-Output $args[0] ' goes to OU: Pharmacy Services'
+                $groups = @('BSMH-CarePath-Access', 'CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Nursing Department','Nursing_access','Pharmacy group')
+                Set-Membership $args[0] $groups
+            }
             'Information Technology' {
                 Write-Output $args[0] ' goes to OU: Information Technology'
                 $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','IT','memo','SSL-VPN-MFA')
                 Set-Membership $args[0] $groups
             }
-            'Quality Division' {Write-Output $args[0] ' goes to OU: Quality Division'}
-            'Emergency Department' {Write-Output $args[0] ' goes to OU: Emergency Department'}
-            'Radiology & Cardiology' {Write-Output $args[0] ' goes to OU: Radiology & Cardiology'}
-            'Therapy Services' {Write-Output $args[0] ' goes to OU: Therapy Services' }
-            'RHC - Sycamore' {Write-Output $args[0] ' goes to OU: RHC - Sycamore'}
-            'Wellness Services' {Write-Output $args[0] ' goes to OU: Wellness Services'}
-            'Perioperative Services' {Write-Output $args[0] ' goes to OU: Perioperative Services'}
-            'Finance & Nursing Division' {Write-Output $args[0] ' goes to OU: Finance & Nursing Division'}
-            'ICU' {Write-Output $args[0] ' goes to OU: ICU'}
-            'Registration' {Write-Output $args[0] ' goes to OU: Registration'}
-            'Accounting' {Write-Output $args[0] ' goes to OU: Accounting'}
-            'Provider Services' {Write-Output $args[0] ' goes to OU: Provider Services'}
-            'Materials' {Write-Output $args[0] ' goes to OU: Materials'}
-            'Wyandot On Wheels' {Write-Output $args[0] ' goes to OU: Wyandot On Wheels'}
-            'Radiology & Cardiology' {Write-Output $args[0] ' goes to OU: Radiology & Cardiology'}
-            'Home Health and Hospice Division' {Write-Output $args[0] ' goes to OU: Home Health and Hospice'}
-            'Home Health Services' {Write-Output $args[0] ' goes to OU: Home Health and Hospice'}
-            'Hospice Services' {Write-Output $args[0] ' goes to OU: Home Health and Hospice'}
-            'Social Services and Bereavement Services' {Write-Output $args[0] ' goes to OU: Social Services and Bereavement Services'}
-            'Environmental Services' {Write-Output $args[0] ' goes to OU: Environmental Services'}
+            'Quality Division' {
+                Write-Output $args[0] ' goes to OU: Quality Division'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','memo')
+                Set-Membership $args[0] $groups
+            }
+            'Emergency Department' {
+                Write-Output $args[0] ' goes to OU: Emergency Department'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Nursing Department','Nursing_access', 'WMHLucid-Staff')
+                Set-Membership $args[0] $groups
+            }
+            'Radiology & Cardiology' {
+                Write-Output $args[0] ' goes to OU: Radiology & Cardiology'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','WMHLUcid-Tech')
+                Set-Membership $args[0] $groups
+            }
+            'Therapy Services' {
+                Write-Output $args[0] ' goes to OU: Therapy Services' 
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','PT Group')
+                Set-Membership $args[0] $groups
+            }
+            'RHC - Sycamore' {
+                Write-Output $args[0] ' goes to OU: RHC - Sycamore'
+                $groups = @('BSMH-CarePath-Access','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Wellness Services' {
+                Write-Output $args[0] ' goes to OU: Wellness Services'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Wellness Group')
+                Set-Membership $args[0] $groups
+            }
+            'Perioperative Services' {
+                Write-Output $args[0] ' goes to OU: Perioperative Services'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Nursing Department','Nursing_access','Surgery Group', 'WMHLucid-Staff')
+                Set-Membership $args[0] $groups
+            }
+            'Finance & Nursing Division' {
+                Write-Output $args[0] ' goes to OU: Finance & Nursing Division'
+                $groups = @('memo')
+                Set-Membership $args[0] $groups
+            }
+            'ICU' {
+                Write-Output $args[0] ' goes to OU: ICU'
+                $groups =@('BSMH-CarePath-Access','BSMH-Medex','CCU Group','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Nursing Department','Nursing_Access')
+                Set-Membership $args[0] $groups
+            }
+            'Registration' {
+                Write-Output $args[0] ' goes to OU: Registration'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Registration Group')
+                Set-Membership $args[0] $groups
+            }
+            'Accounting' {
+                Write-Output $args[0] ' goes to OU: Accounting'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Provider Services' {
+                Write-Output $args[0] ' goes to OU: Provider Services'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Physician Services')
+                Set-Membership $args[0] $groups
+            }
+            'Materials' {
+                Write-Output $args[0] ' goes to OU: Materials'
+                $groups = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Materials','memo')
+                Set-Membership $args[0] $groups
+            }
+            'Wyandot On Wheels' {
+                Write-Output $args[0] ' goes to OU: Wyandot On Wheels'
+                $groups = @('CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot')
+                Set-Membership $args[0] $groups
+            }
+            'Home Health and Hospice Division'{
+                Write-Output $args[0] ' goes to OU: Home Health and Hospice'
+                $groups = @('HomeHealth-Hospice','SSL-VPN-Access')
+            }
+            'Home Health Services' {
+                Write-Output $args[0] ' goes to OU: Home Health and Hospice'
+                $groups = @('HomeHealth-Hospice','SSL-VPN-Access')
+                Set-Membership $args[0] $groups
+        }
+            'Hospice Services' {
+                Write-Output $args[0] ' goes to OU: Home Health and Hospice'
+                $groups = @('HomeHealth-Hospice','SSL-VPN-Access')
+                Set-Membership $args[0] $groups
+            }
+            'Social Services and Bereavement Services' {
+                Write-Output $args[0] ' goes to OU: Social Services and Bereavement Services'
+                $groups = @('memo')
+                Set-Membership $args[0] $groups
+            }
+            'Environmental Services' {
+                Write-Output $args[0] ' goes to OU: Environmental Services'
+                $groups = @('CTX-AppEpicPRD-WarpDrive')
+                Set-Membership $args[0] $groups
+            }
             default {
                 Write-Output $args[0] ' goes to OU: Dept Unknown'
                 Get-AdUser $args[0] | Move-ADObject -TargetPath $unknownOU
@@ -96,7 +252,8 @@ if ($users -eq $null){
 Start-Sleep -Seconds 30
 $failedUsers = Get-ADUser -Filter * -SearchBase $unknownOU -Properties Department | Select-Object -ExpandProperty Name
 $body = "The Following Users have Unknown Departments and need Manual Intervention: `r`n" + ($failedUsers -join "`r`n") 
-Send-MailMessage -From 'AD Automation <adautomation@wyandotmemorail.org>' -To 'IT <it@wyandotmemorial.org>' -Subject 'Test email format' -Body $body -SmtpServer wmh-exch.wmh.com 
+Get-AdUser -Filter * -SearchBase 'OU=Dept Unknown,OU=Users,OU=WMH,DC=wmh,DC=com' -Properties Department,Manager | Select-Object name,SamAccountName,Department,Manager | Export-Excel -Path '\\wmh-it\data$\Automation\AD\UnknownDept.xlsx' 
+Send-MailMessage -From 'AD Automation <adautomation@wyandotmemorial.org>' -To 'IT <it@wyandotmemorial.org>' -Subject 'Test email format' -Body $body -SmtpServer wmh-exch.wmh.com -Attachments '\\wmh-it\data$\Automation\AD\UnknownDept.xlsx'
 
 
 
