@@ -18,12 +18,17 @@ Set-PSFLoggingProvider -Name logfile -Enabled $true -FilePath $logFilePath
 # Global Variables #
 ####################
 
+$mailFrom = 'AD Automation <adautomation@wyandotmemorial.org>'
+$mailTo = 'IT <it@wyandotmemorial.org>'
+$mailSubject = 'Test email format'
+$mailSMTPServer = 'wmh-exch.wmh.com'
+
 $stagedOU = 'OU=Staged,OU=Users,OU=WMH,DC=wmh,DC=com'
 $unknownOU = 'OU=Dept Unknown,OU=Users,OU=WMH,DC=wmh,DC=com'
 
 $unknownOUFilePath = '\\wmh-it\data$\Automation\AD\UnknownDept.xlsx'
 
-$ou_hash_table = @{
+$ouHashTable = @{
     'Providers' = @('BSMH-CarePath-Access','CTX-AppEpic-PRD-WarpDrive-Wyandot','CTX-AppEpicPLY-Wyandot','WMHLucid-Provider');
     'RHC - On Campus' = @('BSMH-CarePath-Access','BSMH-Medex','CTX-AppEpicPRD-WarpDrive-Wyandot','CTX-AppEpicPRD-Wyandot','Physician Services');
     'Administrative Services' = @('Management Team', 'memo');
@@ -120,14 +125,14 @@ function Send-IT-Email {
     General notes
     #>
 
-    $unknown_users = Invoke-Retrieve-Unknown-Users
+    $unknownUsers = Invoke-Retrieve-Unknown-Users
     Write-PSFMessage -Level Output -Message "Retrieved users within the Unknown OU." -Tag "Success"
 
     Invoke-Create-Unknown-User-Attachment
 
     Write-PSFMessage -Level Output -Message "Creating IT email to send for unknown users..." -Tag "Information"
-    $body = "The Following Users have Unknown Departments and need Manual Intervention: `r`n" + ($unknown_users -join "`r`n")
-    Send-MailMessage -From 'AD Automation <adautomation@wyandotmemorial.org>' -To 'IT <it@wyandotmemorial.org>' -Subject 'Test email format' -Body $body -SmtpServer wmh-exch.wmh.com -Attachments $unknownOUFilePath
+    $body = "The Following Users have Unknown Departments and need Manual Intervention: `r`n" + ($unknownUsers -join "`r`n")
+    Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $body -SmtpServer $mailSMTPServer -Attachments $unknownOUFilePath
     Write-PSFMessage -Level Output -Message "Sent IT email unknown users." -Tag "Success"
 }
 
@@ -227,9 +232,9 @@ function Move-Department($user) {
     if($null -eq $dept){
         Set-Unknown($user)
     }else{
-        if ($ou_hash_table.$dept){
+        if ($ouHashTable.$dept){
             Write-PSFMessage -Level Output -Message "$user goes to OU: $dept" -Tag $dept
-            Set-Membership($user,$ou_hash_table.$dept)
+            Set-Membership($user,$ouHashTable.$dept)
             Write-PSFMessage -Level Output -Message "$user successfully set to OU: $dept" -Tag $dept
         }else{
             Write-PSFMessage -Level Critical -Message "Department not found in hash table" -Tag 'Failure' -ErrorRecord $_
@@ -237,7 +242,7 @@ function Move-Department($user) {
     }
 }
 
-function Invoke-Retrieve-AD-Users($org_unit) {
+function Invoke-Retrieve-AD-Users($orgUnit) {
     <#
     .SYNOPSIS
     Retrieves all AD users sAMAccountNames from provided OU
@@ -253,7 +258,7 @@ function Invoke-Retrieve-AD-Users($org_unit) {
     #>
 
     Write-PSFMessage -Level Output -Message "Retrieving user list for $stagedOU from AD..." -Tag "Information"
-    return Get-ADUser -Filter * -SearchBase $org_unit | select-object -ExpandProperty SamAccountName
+    return Get-ADUser -Filter * -SearchBase $orgUnit | select-object -ExpandProperty SamAccountName
 }
 
 function Invoke-Main {
