@@ -81,7 +81,9 @@ function Invoke-Create-Unknown-User-Attachment {
     General notes
     #>
 
+    Write-PSFMessage -Level Output -Message "Creating unknown user email attachment..." -Tag "Information"
     Get-ADUser -Filter * -SearchBase $unknownOU -Properties Department,Manager | Select-Object name,SamAccountName,Department,Manager | Export-Excel -Path $unknownOUFilePath
+    Write-PSFMessage -Level Output -Message "Created unknown user attachment." -Tag "Success"
 }
 
 function Invoke-Retrieve-Unknown-Users {
@@ -99,6 +101,7 @@ function Invoke-Retrieve-Unknown-Users {
     General notes
     #>
 
+    Write-PSFMessage -Level Output -Message "Retrieving users within the Unknown OU..." -Tag "Information"
     return Get-ADUser -Filter * -SearchBase $unknownOU -Properties Department | Select-Object -ExpandProperty Name
 }
 
@@ -117,12 +120,18 @@ function Send-IT-Email {
     General notes
     #>
 
-    $body = "The Following Users have Unknown Departments and need Manual Intervention: `r`n" + (Invoke-Retrieve-Unknown-Users -join "`r`n")
+    $unknown_users = Invoke-Retrieve-Unknown-Users
+    Write-PSFMessage -Level Output -Message "Retrieved users within the Unknown OU." -Tag "Success"
+
     Invoke-Create-Unknown-User-Attachment
+
+    Write-PSFMessage -Level Output -Message "Creating IT email to send for unknown users..." -Tag "Information"
+    $body = "The Following Users have Unknown Departments and need Manual Intervention: `r`n" + ($unknown_users -join "`r`n")
     Send-MailMessage -From 'AD Automation <adautomation@wyandotmemorial.org>' -To 'IT <it@wyandotmemorial.org>' -Subject 'Test email format' -Body $body -SmtpServer wmh-exch.wmh.com -Attachments $unknownOUFilePath
+    Write-PSFMessage -Level Output -Message "Sent IT email unknown users." -Tag "Success"
 }
 
-function Set-Membership($targetUser, $targetGroups){
+function Set-Membership($targetUser){
     <#
     .SYNOPSIS
     Sets group membership based on user's OU
@@ -133,7 +142,7 @@ function Set-Membership($targetUser, $targetGroups){
     .PARAMETER targetUser
     User to place into provided AD groups
     type: [string]
-
+s
     .PARAMETER targetGroups
     List of AD groups
     type: [array]
@@ -153,7 +162,49 @@ function Set-Membership($targetUser, $targetGroups){
     Write-PSFMessage -Level Output -Message "$targetUser added to: $targetGroups" -Tag "Success"
 }
 
-function Move-Department{
+function Set-Unknown($user){
+    <#
+    .SYNOPSIS
+    Sets group membership based to unknown for user
+
+    .DESCRIPTION
+    Long description
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
+
+    Write-PSFMessage -Level Important -Message "$user goes to OU: Dept Unknown" -Tag 'Unknown'
+    Get-AdUser $user | Move-ADObject -TargetPath $unknownOU
+    Write-PSFMessage -Level Important -Message "$user set to OU: Dept Unknown" -Tag 'Unknown'
+}
+
+function Invoke-Retrieve-Department($user) {
+    <#
+    .SYNOPSIS
+    Retrieves the department associated with the AD user
+
+    .DESCRIPTION
+    Long description
+
+    .PARAMETER user
+    Parameter description
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
+
+    Write-PSFMessage -Level Output -Message "Retrieving $user from the staged OU..." -Tag "Information"
+    return Get-ADUser $user -Properties department | select-object -ExpandProperty department
+}
+
+function Move-Department($user) {
     <#
     .SYNOPSIS
     Moves AD users into appropriate department OUs
@@ -170,27 +221,26 @@ function Move-Department{
     General notes
     #>
 
-    $dept = Get-ADUser $args[0] -Properties department | select-object -ExpandProperty department
+    $dept = Invoke-Retrieve-Department($user)
+    Write-PSFMessage -Level Output -Message "Retrieved $user from the staged OU." -Tag "Success"
+
     if($null -eq $dept){
-        $relationship = [string]::Format("{0} goes to OU: Dept Unknown",$args[0],$dept)
-        Get-AdUser $args[0] | Move-ADObject -TargetPath $unknownOU
-        Write-PSFMessage -Level Important -Message $relationship -Tag 'Unknown'
+        Set-Unknown($user)
     }else{
         if ($ou_hash_table.$dept){
-            $relationship = [string]::Format("{0} goes to OU: {1}",$args[0],$dept)
-            Write-PSFMessage -Level Output -Message $relationship -Tag $dept
-            $groups = $ou_hash_table.$dept
-            Set-Membership $args[0] $groups
+            Write-PSFMessage -Level Output -Message "$user goes to OU: $dept" -Tag $dept
+            Set-Membership($user,$ou_hash_table.$dept)
+            Write-PSFMessage -Level Output -Message "$user successfully set to OU: $dept" -Tag $dept
         }else{
             Write-PSFMessage -Level Critical -Message "Department not found in hash table" -Tag 'Failure' -ErrorRecord $_
         }
     }
 }
 
-function Invoke-Retrieve-AD-Users {
+function Invoke-Retrieve-AD-Users($org_unit) {
     <#
     .SYNOPSIS
-    Retrieves a list of AD users to be processed
+    Retrieves all AD users sAMAccountNames from provided OU
 
     .DESCRIPTION
     Long description
@@ -202,7 +252,29 @@ function Invoke-Retrieve-AD-Users {
     General notes
     #>
 
-    $users = Get-ADUser -Filter * -SearchBase $stagedOU | select-object -ExpandProperty SamAccountName
+    Write-PSFMessage -Level Output -Message "Retrieving user list for $stagedOU from AD..." -Tag "Information"
+    return Get-ADUser -Filter * -SearchBase $org_unit | select-object -ExpandProperty SamAccountName
+}
+
+function Invoke-Main {
+    <#
+    .SYNOPSIS
+    The main function for the program
+
+    .DESCRIPTION
+    Processes a list of users from a given OU, assigns them
+    to appropriate groups, and sends an email of unknown users
+    that need manual intervention.
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
+
+    $users = Invoke-Retrieve-AD-Users($stagedOU)
+    Write-PSFMessage -Level Output -Message "Retrieved user list for $stagedOU from AD." -Tag "Success"
 
     if ($null -eq $users){
         Write-PSFMessage -Level Output -Message "No users to process" -Tag 'Information'
@@ -214,9 +286,11 @@ function Invoke-Retrieve-AD-Users {
             Move-Department($users[$i])
         }
     }
+
     # Just a sleep...
     Start-Sleep -Seconds 30
+
+    Send-IT-Email
 }
 
-Invoke-Retrieve-AD-Users
-Send-IT-Email
+Invoke-Main
